@@ -1,39 +1,47 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class MultipleChoiceQuestion extends Question{
-    private final List<String> correctAnswers;
+public class MultipleChoiceQuestion extends Question {
 
-    public MultipleChoiceQuestion(String questionText, List<String> options, List<String> correctAnswers) {
+    public MultipleChoiceQuestion(String questionText, List<Option> options) {
         super(questionText, options);
-        this.correctAnswers = new ArrayList<>();
-        for (String answer : correctAnswers) {
-            this.correctAnswers.add(answer.toLowerCase());
-
-        }
     }
 
     @Override
     public boolean checkAnswer(String userAnswer) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Check if answer has 1-3 letters
-        while (userAnswer == null || userAnswer.isEmpty() || userAnswer.length() > 3 || !"abc".contains(userAnswer.toLowerCase())) {
-            System.out.println("Invalid answer. You must enter between 1 and 3 letters. abc.");
-            System.out.print("Please enter your answer again: ");
-            userAnswer = scanner.nextLine();
+        // Check if answer is letter from abc, 1-3 letters.
+        if (userAnswer == null || userAnswer.isEmpty() || userAnswer.length() > options.size() || !userAnswer.toLowerCase().matches("[abc]+")) {
+            System.out.println("Invalid answer. You must enter valid letters: a, b, or c.");
+            return false;
         }
 
-        List<String> userAnswers = new ArrayList<>();
+        // Convert answers to list of indexes
+        List<Integer> userIndexes = new ArrayList<>();
         for (char c : userAnswer.toLowerCase().toCharArray()) {
-            userAnswers.add(String.valueOf(c));
+            int index = c - 'a';
+            userIndexes.add(index);
         }
-        for (String answer : userAnswers) {
-            if (!correctAnswers.contains(answer.trim())) {
+
+        // Check if user answer all isCorrect answers
+        for (int i = 0; i < options.size(); i++) {
+            if (options.get(i).isCorrect() && !userIndexes.contains(i)) {
                 return false;
             }
         }
-        return userAnswers.size() == correctAnswers.size();
+
+        for (int index : userIndexes) {
+            if (!options.get(index).isCorrect()) {
+                return false;
+            }
+        }
+
+        // Check wrong answers
+        for (int index : userIndexes) {
+            if (!options.get(index).isCorrect()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
