@@ -12,8 +12,16 @@ public class Main {
                                 new Option("Madrid", false)
                         )
                 ),
+                new SingleChoiceQuestion(
+                        "What is the currency in Slovakia?",
+                        List.of(
+                                new Option("Dollar", false),
+                                new Option("Libra", false),
+                                new Option("Euro", true)
+                        )
+                ),
                 new MultipleChoiceQuestion(
-                        "Which of these are programming languages?",
+                        "Which of these are programming languages? (type answer like ac)",
                         List.of(
                                 new Option("Python", true),
                                 new Option("HTML", false),
@@ -37,14 +45,13 @@ public class Main {
                     System.out.println("Correct!");
                     score++;
                     break;
-                } else if (!"abc".contains(userAnswer.toLowerCase())) {
-                    System.out.println("Invalid answer format. Please try again.");
-                } else {
+                    }
+                else if ("abc".contains(userAnswer.toLowerCase()) || userAnswer.toLowerCase().matches("[abc]+")) {
                     System.out.println("Wrong answer :(");
                     break;
+                    }
                 }
             }
-        }
 
         System.out.println("Your score is " + score + "/" + quiz.size() + ".");
     }
